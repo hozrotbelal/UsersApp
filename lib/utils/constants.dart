@@ -352,9 +352,8 @@ const String regularExpressionPhone = "(\\+[0-9]+[\\- \\.]*)?(\\([0-9]+\\)[\\- \
 const String assetPlaceHolder = 'assets/placeholder.jpeg';
 const String assetDefaultAvatar = 'assets/default_avatar.png';
 
-const String assetDummyProfile = 'assets/dummy_profile.png';
-
 const String loadingImage = 'assets/loading.png';
+const String assetIcDelete = 'assets/ic_delete.png';
 
 //SVG
 const String assetSvgAppLogo = 'assets/svg/app_logo.svg';

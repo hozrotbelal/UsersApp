@@ -1,17 +1,15 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:usersapp/ui/home/content/home_content_view.dart';
 
 import '../../../utils/constants.dart';
+import '../../favorite/favorite_view.dart';
 
 class HomeContainerController extends GetxController {
   late Widget body;
   late int selectedBottomBarIndex;
   var currentIndex = 0.obs;
-  late RxInt notificationCount;
   GlobalKey<ScaffoldState> keyScaffold = GlobalKey<ScaffoldState>();
   late RxBool isFilterDrawerVisible;
   late List<Widget> pages;
@@ -24,13 +22,11 @@ class HomeContainerController extends GetxController {
   void onInit() {
     body = const HomeContentView();
     selectedBottomBarIndex = 0;
-    //notificationCount = 0.obs;
-    iconPath = <String>[assetSvgIcHome, assetSvgIcCategories, assetSvgIcChat, assetSvgIcAccount];
-    iconNames = <String>["Home", "Categories", "Chat", "Account"];
+    iconPath = <String>[assetSvgIcHome, assetSvgIcHeartLikeRed, assetSvgIcChat, assetSvgIcAccount];
+    iconNames = <String>["Home", "Favorite", "Chat", "Account"];
     pages = [
       const HomeContentView(),
-      const HomeContentView(),
-      //const CategoryView(),
+      const FavoriteView(),
       const HomeContentView(),
       const HomeContentView(),
       // const AccountView(),
@@ -43,23 +39,6 @@ class HomeContainerController extends GetxController {
     super.onClose();
   }
 
-  void openPersonalDrawer() {
-    isFilterDrawerVisible.value = false;
-    //  keyScaffold.currentState!.openDrawer();
-  }
-
-  void closeFilterDrawer() {
-    Get.back();
-  }
-
-  // void goToCategoryPage() {
-  //   Get.to(
-  //     () => CategoryView(),
-  //     binding: CategoryBinding(),
-  //     arguments: {isBaseCategory: true, isTopCategory: false},
-  //   );
-  // }
-
   void changeBottomBarIndex(int index) {
     selectedBottomBarIndex = index;
 
@@ -69,18 +48,10 @@ class HomeContainerController extends GetxController {
         break;
       case 1:
         selectedBottomBarIndex = 1;
-        // final messengerController = Get.find<MessengerController>();
-        // messengerController.onInit();
-        body = const HomeContentView();
-        // body = CategoryView(
-        //   isBaseCategory: true,
-        // );
-        //  goToCategoryPage();
-
+        body = const FavoriteView();
         break;
       case 2:
         selectedBottomBarIndex = 2;
-
         break;
 
       case 3:

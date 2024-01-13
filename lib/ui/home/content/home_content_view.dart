@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,11 +6,9 @@ import 'package:usersapp/ui/home/content/component/user_item.dart';
 
 import 'package:usersapp/ui/home/content/home_content_controller.dart';
 
-import '../../../base/widget/central_progress_indicator.dart';
+import '../../../base/widget/appbar/custom_app_bar.dart';
 import '../../../base/widget/custom_text_form_field.dart';
-import '../../../base/widget/line/line.dart';
 import '../../../utils/constants.dart';
-import '../../../utils/dimensions.dart';
 import '../../../utils/enum/enum.dart';
 import '../../../utils/helper/shimmer_helper.dart';
 
@@ -20,8 +17,6 @@ class HomeContentView extends GetView<HomeContentController> {
 
   @override
   Widget build(BuildContext context) {
-    final homeContentController = Get.find<HomeContentController>();
-
     final double statusBarHeight = MediaQuery.of(context).padding.top;
     return AnnotatedRegion(
       value: systemUiOverlayStyleGlobal.copyWith(
@@ -55,7 +50,14 @@ class HomeContentView extends GetView<HomeContentController> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                //HeaderWidget(),
+                const CustomAppBar(
+                  title: "User List",
+                  isBackButtonExist: false,
+                  paddindAppBar: EdgeInsets.only(left: 14.0, top: 14.0, bottom: 14.0),
+                  horizontalChild: Expanded(
+                    child: SizedBox(),
+                  ),
+                ),
                 // buildHomeSearchBox,
                 Expanded(
                   child: buildAllUserItemList(),
@@ -96,15 +98,15 @@ class HomeContentView extends GetView<HomeContentController> {
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             physics: const ScrollPhysics(),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(0),
             itemBuilder: (context, index) {
               // 3
               return UserItem(
-                item: controller.allUsersList[index],
-                onTap: () {
-                  // controller.goToSearchToDetailsPage(controller.allPublicSearchItemList[index].Id, controller.allPublicSearchItemList[index].Slug!);
-                },
-              );
+                  item: controller.allUsersList[index],
+                  onTap: () {},
+                  onPressedAddedToFavorite: () {
+                    controller.addOrUpdateUserFavorite(controller.allUsersList[index]);
+                  });
             },
           ),
         ),
@@ -118,7 +120,7 @@ class HomeContentView extends GetView<HomeContentController> {
             fontWeight: FontWeight.w500,
             fontSize: 14,
             color: colorLightGray1,
-            fontFamily: fontFamilyPoppins,
+            fontFamily: fontFamilyQuicksand,
           ),
         ),
       );
@@ -133,7 +135,7 @@ class HomeContentView extends GetView<HomeContentController> {
       width: double.infinity,
       color: Colors.white,
       child: Center(
-        child: Text(controller.totalRecordCount == controller.allUsersList.length ? "No More Products" : "Loading More Products ..."),
+        child: Text(controller.totalRecordCount.value == controller.allUsersList.length ? "No More Products" : "Loading More Products ..."),
       ),
     );
   }
@@ -218,61 +220,4 @@ class HomeContentView extends GetView<HomeContentController> {
           ],
         ).marginOnly(top: 10.0),
       );
-
-  // All Tab View
-  // Widget allTabView() {
-  //   return Container(
-  //     color: colorLightWhiteFA,
-  //     padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 5),
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: <Widget>[
-  //         Container(
-  //           width: Get.width,
-  //           height: 35,
-  //           margin: const EdgeInsets.only(left: 16, right: 16, top: 5, bottom: 5),
-  //           child: ListView.builder(
-  //               itemCount: controller.homeTab.length,
-  //               scrollDirection: Axis.horizontal,
-  //               shrinkWrap: true,
-  //               physics: const AlwaysScrollableScrollPhysics(),
-  //               itemBuilder: (context, index) {
-  //                 return GestureDetector(
-  //                   onTap: () {
-  //                     controller.tabSelected.value = index;
-  //                     // controller.checkItemsGroup(true, controller.itemGroupItems[index].Id);
-  //                   },
-  //                   child: Container(
-  //                     alignment: Alignment.center,
-  //                     padding: const EdgeInsets.symmetric(
-  //                       horizontal: 10,
-  //                     ),
-  //                     margin: const EdgeInsets.only(right: 10),
-  //                     decoration: BoxDecoration(
-  //                       color: controller.tabSelected.value == index ? colorRed2C : colorLightWhite3,
-  //                       borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-  //                       border: controller.tabSelected.value == index ? Border.all(color: colorRed2C) : Border.all(color: colorLightGray14),
-  //                     ),
-  //                     child: Row(
-  //                       children: <Widget>[
-  //                         const SizedBox(width: 3),
-  //                         Text(
-  //                           controller.homeTab[index],
-  //                           softWrap: false,
-  //                           textAlign: TextAlign.center,
-  //                           style: Get.textTheme.bodyMedium!.copyWith(color: controller.tabSelected == index.obs ? colorWhite : colorLightGray5, fontFamily: fontFamilyQuicksand, fontWeight: FontWeight.w500, fontSize: 12),
-  //                           maxLines: 1,
-  //                           overflow: TextOverflow.ellipsis,
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 );
-  //               }),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
 }

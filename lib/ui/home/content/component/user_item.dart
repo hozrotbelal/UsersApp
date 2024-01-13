@@ -9,12 +9,14 @@ import '../../../../utils/helper/text.dart';
 
 class UserItem extends StatelessWidget {
   final Users item;
-  final GestureTapCallback onTap;
+  final VoidCallback onTap;
+  final VoidCallback? onPressedAddedToFavorite;
 
   const UserItem({
     Key? key,
     required this.item,
     required this.onTap,
+    this.onPressedAddedToFavorite,
   }) : super(key: key);
 
   @override
@@ -30,7 +32,7 @@ class UserItem extends StatelessWidget {
       address = "$address${item.city!},";
     }
     if (TextUtil.isNotEmpty(item.country)) {
-      address = "$address${item.country!},";
+      address = "$address${item.country!}";
     }
     return GestureDetector(
       onTap: onTap,
@@ -89,9 +91,9 @@ class UserItem extends StatelessWidget {
                         height: 10,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(bottom: Get.width * .013),
+                        padding: EdgeInsets.only(bottom: Get.width * .010),
                         child: Text(
-                          "Name : ${item.firstName ?? ""}  " " ${item.lastName ?? ""}",
+                          "${item.firstName ?? ""}  " " ${item.lastName ?? ""}",
                           textAlign: TextAlign.start,
                           style: Get.textTheme.bodyMedium!.copyWith(
                             fontWeight: FontWeight.w600,
@@ -160,26 +162,29 @@ class UserItem extends StatelessWidget {
                         ),
                       ),
                       //  SizedBox(width: 5),
-                      Container(
-                        width: Get.width * .35,
-                        alignment: Alignment.bottomRight,
-                        padding: const EdgeInsets.fromLTRB(8, 5, 8, 6),
-                        margin: const EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(color: colorGreen51, width: 1, style: BorderStyle.solid),
-                        ),
-                        child: Text(
-                          "Add to Favorite",
-                          textAlign: TextAlign.start,
-                          style: Get.textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: colorPrimary,
-                            fontSize: Get.width * .037,
+                      GestureDetector(
+                        onTap: onPressedAddedToFavorite,
+                        child: Container(
+                          width: Get.width * .35,
+                          alignment: Alignment.bottomRight,
+                          padding: const EdgeInsets.fromLTRB(8, 5, 8, 6),
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: colorGreen51, width: 1, style: BorderStyle.solid),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                          child: Text(
+                            "Add to Favorite",
+                            textAlign: TextAlign.start,
+                            style: Get.textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colorPrimary,
+                              fontSize: Get.width * .037,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ),
                     ],

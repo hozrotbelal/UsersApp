@@ -12,5 +12,6 @@ abstract class _Paths {
   _Paths._();
   static const splash = '/splash';
   static const home = '/home';
+  static const favorite = '/favorite';
   static const chat = '/chat';
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:usersapp/base/others_lib/animated_bottom_nav/animated_bottom_navigation_bar.dart';
+import 'package:usersapp/ui/favorite/favorite_controller.dart';
 
 import 'package:usersapp/ui/home/container/home_container_controller.dart';
 import 'package:usersapp/utils/helper/toast.dart';
@@ -32,7 +33,7 @@ class HomeContainerView extends GetView<HomeContainerController> {
         onPopInvoked: (didPop) {
           var isValueExit = false;
           if (controller.selectedBottomBarIndex > 0) {
-            controller.changeBottomBarIndex(0);
+            // controller.changeBottomBarIndex(0);
             return;
           } else {
             if (controller.selectedBottomBarIndex == 0) {
@@ -108,41 +109,11 @@ class HomeContainerView extends GetView<HomeContainerController> {
               },
               backgroundColor: colorWhite,
               activeIndex: controller.currentIndex.value,
-              //  splashColor: colors.activeNavigationBarColor,
-              //notchAndCornersAnimation: borderRadiusAnimation,
-              // splashSpeedInMilliseconds: 300,
               notchSmoothness: NotchSmoothness.softEdge,
               gapLocation: GapLocation.center,
-              // leftCornerRadius: 32,
-              // rightCornerRadius: 32,
               onTap: (index) => _onJumpTo(index),
-              //  hideAnimationController: _hideBottomBarAnimationController,
-              // shadow: BoxShadow(
-              //   offset: Offset(0, 1),
-              //   blurRadius: 12,
-              //   spreadRadius: 0.5,
-              //   color: colors.activeNavigationBarColor,
-              // ),
               key: controller.bottomNavigationKey,
             ),
-
-            //  floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            // floatingActionButton: FloatingActionButton(
-            //   child: Icon(
-            //     Icons.add,
-            //     size: 40.0,
-            //   ),
-            //   onPressed: () {},
-            // ),
-
-            //  drawerEnableOpenDragGesture: false,
-
-            // body: GetBuilder<HomeContainerController>(
-            //   id: 'body',
-            //   builder: (controller) {
-            //     return controller.body;
-            //   },
-            // ),
           ),
         ),
       ),
@@ -152,6 +123,10 @@ class HomeContainerView extends GetView<HomeContainerController> {
   _onJumpTo(int index) {
     controller.controller.jumpToPage(index);
     controller.currentIndex.value = index;
+    if (index == 1) {
+      final favoriteController = Get.find<FavoriteController>();
+      favoriteController.getAllFavoriteFromDB();
+    }
   }
 
   onExitPressed() async {
@@ -223,125 +198,6 @@ class HomeContainerView extends GetView<HomeContainerController> {
         fontFamily: fontFamilyQuicksand,
         color: textColor,
       ),
-    );
-  }
-
-  Widget buildBottomBar() {
-    return GetBuilder<HomeContainerController>(
-      id: 'bottom_bar',
-      builder: (HomeContainerController viewController) {
-        return BottomAppBar(
-          color: Colors.transparent,
-          clipBehavior: Clip.antiAlias,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
-            child: BottomNavigationBar(
-              elevation: 0.0,
-              backgroundColor: colorPrimary,
-              currentIndex: viewController.selectedBottomBarIndex,
-              type: BottomNavigationBarType.fixed,
-              showUnselectedLabels: true,
-              showSelectedLabels: true,
-              // selectedFontSize: 10.0,
-              // unselectedFontSize: 11.0,
-              unselectedItemColor: colorLightWhite3.withOpacity(.8),
-              selectedLabelStyle: Get.textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: Get.width * 0.033,
-                fontFamily: fontFamilyQuicksand,
-                color: const Color(0xFFfafffb),
-              ),
-              unselectedLabelStyle: Get.textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: Get.width * 0.033,
-                fontFamily: fontFamilyQuicksand,
-                color: const Color(0xFFf8d2c0),
-              ),
-              items: [
-                getBottomBarItem(
-                  viewController,
-                  Icons.home_outlined,
-                  'home'.tr,
-                  0,
-                ),
-                getBottomBarItem(
-                  viewController,
-                  Icons.message,
-                  'bottom_item_message'.tr,
-                  1,
-                ),
-                getBottomBarItem(
-                  viewController,
-                  Icons.shopping_cart_outlined,
-                  'bottom_item_home'.tr,
-                  2,
-                  hasBatch: true,
-                ),
-                getBottomBarItem(
-                  viewController,
-                  Icons.person_outline_outlined,
-                  'bottom_item_profile'.tr,
-                  3,
-                ),
-              ],
-              onTap: (index) {
-                viewController.changeBottomBarIndex(index);
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  BottomNavigationBarItem getBottomBarItem(
-    HomeContainerController viewController,
-    IconData icon,
-    String title,
-    int position, {
-    bool hasBatch = false,
-  }) {
-    final theme = Get.theme.bottomNavigationBarTheme;
-    return BottomNavigationBarItem(
-      icon: Stack(
-        alignment: Alignment.topRight,
-        children: [
-          Icon(
-            icon,
-            size: 27.0,
-            color: position == viewController.selectedBottomBarIndex ? theme.selectedItemColor : colorLightWhite3.withOpacity(.8),
-          ),
-          if (hasBatch && viewController.notificationCount > 0)
-            Container(
-              width: 20.0,
-              height: 20.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colorRed28,
-                border: Border.fromBorderSide(
-                  BorderSide(
-                    width: 2.0,
-                    color: theme.backgroundColor!,
-                  ),
-                ),
-              ),
-              child: Center(
-                child: Obx(
-                  () => Text(
-                    "${viewController.notificationCount.value}",
-                    style: Get.theme.textTheme.bodySmall!.copyWith(
-                      color: Colors.white,
-                      fontSize: 10.0,
-                    ),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ).marginOnly(bottom: 1.5),
-      label: title,
     );
   }
 }

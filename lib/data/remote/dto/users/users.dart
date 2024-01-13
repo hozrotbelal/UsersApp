@@ -57,4 +57,23 @@ class Users {
     data['longitude'] = longitude;
     return data;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'first_name': firstName,
+      'last_name': lastName,
+      'profile_picture': profilePicture,
+      'date_of_birth': dateOfBirth,
+      'job': job,
+      'email': email,
+      'phone': phone,
+      'city': city,
+      'zipcode': zipcode,
+      'street': street,
+      'state': state,
+      'country': country,
+      'gender': gender,
+    };
+  }
 }

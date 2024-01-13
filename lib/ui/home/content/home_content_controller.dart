@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:usersapp/data/local/db/db_provider.dart';
+import 'package:usersapp/data/local/db/db_td.dart';
 import 'package:usersapp/data/local/service/local_service.dart';
 import 'package:usersapp/data/remote/dto/users/users.dart';
 import 'package:usersapp/data/remote/service/remote_service.dart';
@@ -17,41 +19,31 @@ class HomeContentController extends GetxController {
   GlobalKey<ScaffoldState> homeKeyScaffolds = GlobalKey<ScaffoldState>();
 
   late RxBool isLoading;
-  late double carouselHeight;
   ScrollController xScrollController = ScrollController();
   ScrollController scrollController = ScrollController();
 
   late RemoteService _remoteService;
   late LocalService _localService;
-  // SiteSettingsResponse? siteSettings;
 
   TextEditingController searchController = TextEditingController();
 
   FocusNode nameFocus = FocusNode();
 
-  bool isOpenCallDialog = false;
-
-  int userId = 0;
-
-  int offSet = 20;
+  int offSet = 10;
   int limit = 10;
-
   int page = 1;
 
   var totalRecordCount = RxInt(0);
 
   bool isLoadComplete = false;
-  bool isFirstLoadRunning = false;
   bool isLoadMoreRunning = false;
   bool showLoadingContainer = false;
-
-  bool isConnectivity = true;
   bool isInitial = true;
+
   List<Users> _usersList = [];
   List<Users> get allUsersList => _usersList;
-  var connectionStatus = 1.obs;
-  var tabSelected = 0.obs;
-  late StreamSubscription<InternetConnectionStatus> _listener;
+
+  List<Users> _favoriteUsersList = [];
 
   @override
   void onInit() {
@@ -60,19 +52,6 @@ class HomeContentController extends GetxController {
     _localService = Get.find<LocalService>();
     _remoteService = Get.find<RemoteService>();
 
-    // _listener = InternetConnectionChecker().onStatusChange.listen((InternetConnectionStatus status) {
-    //   switch (status) {
-    //     case InternetConnectionStatus.connected:
-    //       connectionStatus.value = 1;
-
-    //       getAllDataList(RefreshType.DEFAULT);
-    //       break;
-    //     case InternetConnectionStatus.disconnected:
-    //       connectionStatus.value = 0;
-
-    //       break;
-    //   }
-    // });
     getAllDataList(RefreshType.DEFAULT);
     xScrollController = ScrollController()..addListener(loadMore);
 
@@ -81,21 +60,21 @@ class HomeContentController extends GetxController {
 
 // load More
   void loadMore() async {
-    if (isFirstLoadRunning == false && isLoadMoreRunning == false && xScrollController.position.pixels == xScrollController.position.maxScrollExtent && totalRecordCount.value > page * limit) {
+    if (isLoadMoreRunning == false && xScrollController.position.pixels == xScrollController.position.maxScrollExtent && totalRecordCount.value > page * limit) {
       page++;
       isLoadMoreRunning = true;
       getAllDataList(RefreshType.LOAD_MORE);
     }
   }
 
+  // RefreshType
   void getAllDataList(RefreshType type) async {
     if (type == RefreshType.DEFAULT || type == RefreshType.REFRESH) {
       page = 1;
       _usersList.clear();
       isLoadComplete = false;
       isInitial = true;
-      isFirstLoadRunning = false;
-      showLoadingContainer = true;
+      showLoadingContainer = false;
       totalRecordCount.value = 0;
       updateUI();
     }
@@ -111,14 +90,14 @@ class HomeContentController extends GetxController {
       isLoadComplete = true;
       isLoading = true.obs;
 
-      var usersDataResponse = await _remoteService.getUsersInfo(offset: page > 1 ? page * 10 : page);
+      var usersDataResponse = await _remoteService.getUsersInfo(offset: page > 1 ? page * offSet : page);
       if (usersDataResponse != null) {
         if (usersDataResponse.users!.isNotEmpty) {
           isLoadComplete = false;
           _usersList.addAll(usersDataResponse.users ?? []);
         }
         totalRecordCount.value = usersDataResponse.totalUsers ?? 0;
-        isFirstLoadRunning = false;
+        showLoadingContainer = false;
       } else {
         _usersList = [];
         totalRecordCount.value = 0;
@@ -140,31 +119,64 @@ class HomeContentController extends GetxController {
         ToastUtil.show(e.toString());
       } else {
         ToastUtil.show(e.toString());
-        //  ToastUtil.show('Public search error item'.tr);
       }
     }
+  }
+
+/*..... Local Database Used ......*/
+
+  Future<List<Users>> isAlreadyAddedFavorite(List<Users> userList, int id) async {
+    return userList.isNotEmpty ? userList.where((o) => o.id == id).toList() : [];
+  }
+
+  addOrUpdateUserFavorite(Users users) async {
+    await getAllFavoriteUsers().then((result) async {
+      _favoriteUsersList = result;
+      var alreadyAddedFavoriteList = await isAlreadyAddedFavorite(_favoriteUsersList, users.id!);
+      if (alreadyAddedFavoriteList.isNotEmpty) {
+        // Get.log("users:>> ${alreadyAddedCartList.length}");
+        ToastUtil.show("User already added");
+      } else {
+        var addToFavoriteValue = await addToFavorite(users);
+        if (addToFavoriteValue) {
+          ToastUtil.show("Add favorite successfully");
+        }
+      }
+    });
+  }
+
+  Future<bool> addToFavorite(Users users) async {
+    final Database database = await DBProvider.db.database;
+    int id = await database.insert(FavouritesTable.tableName, users.toMap());
+    return id != 0;
+  }
+
+  Future<bool> removeFromFavorite(int id) async {
+    final Database database = await DBProvider.db.database;
+    int result = await database.delete(FavouritesTable.tableName, where: '${FavouritesTable.columnId} = ?', whereArgs: [id]);
+    return result != 0;
+  }
+
+  Future<List<Users>> getAllFavoriteUsers() async {
+    List<Users> favoriteUsersList = [];
+    final Database database = await DBProvider.db.database;
+    final result = await database.query(FavouritesTable.tableName);
+    for (var r in result) {
+      favoriteUsersList.add(Users.fromJson(r));
+    }
+    return favoriteUsersList;
   }
 
   @override
   void onClose() {
     xScrollController.dispose();
     scrollController.dispose();
-    _listener.cancel();
     super.onClose();
   }
 
   @override
   void onReady() {
     super.onReady();
-  }
-
-  Future<void> onPageRefresh() async {
-    _usersList.clear();
-    isLoadComplete = false;
-    isFirstLoadRunning = true;
-    totalRecordCount.value = 0;
-    updateUI();
-    getAllDataList(RefreshType.REFRESH);
   }
 
   void updateUI() {
