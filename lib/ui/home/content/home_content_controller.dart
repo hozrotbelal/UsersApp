@@ -10,6 +10,9 @@ import 'package:usersapp/data/local/db/db_td.dart';
 import 'package:usersapp/data/local/service/local_service.dart';
 import 'package:usersapp/data/remote/dto/users/users.dart';
 import 'package:usersapp/data/remote/service/remote_service.dart';
+import 'package:usersapp/ui/details/user_details_binding.dart';
+import 'package:usersapp/ui/details/user_details_view.dart';
+import 'package:usersapp/utils/constants.dart';
 
 import '../../../base/exception/app_exception.dart';
 import '../../../utils/enum/enum.dart';
@@ -18,7 +21,6 @@ import '../../../utils/helper/toast.dart';
 class HomeContentController extends GetxController {
   GlobalKey<ScaffoldState> homeKeyScaffolds = GlobalKey<ScaffoldState>();
 
-  late RxBool isLoading;
   ScrollController xScrollController = ScrollController();
   ScrollController scrollController = ScrollController();
 
@@ -47,7 +49,6 @@ class HomeContentController extends GetxController {
 
   @override
   void onInit() {
-    isLoading = false.obs;
     searchController = TextEditingController();
     _localService = Get.find<LocalService>();
     _remoteService = Get.find<RemoteService>();
@@ -88,39 +89,44 @@ class HomeContentController extends GetxController {
   void getAllUsersItemList() async {
     try {
       isLoadComplete = true;
-      isLoading = true.obs;
-
       var usersDataResponse = await _remoteService.getUsersInfo(offset: page > 1 ? page * offSet : page);
+
       if (usersDataResponse != null) {
         if (usersDataResponse.users!.isNotEmpty) {
           isLoadComplete = false;
           _usersList.addAll(usersDataResponse.users ?? []);
         }
         totalRecordCount.value = usersDataResponse.totalUsers ?? 0;
-        showLoadingContainer = false;
       } else {
         _usersList = [];
         totalRecordCount.value = 0;
       }
+
       isLoadMoreRunning = false;
-      isLoading = false.obs;
       isInitial = false;
       showLoadingContainer = false;
       updateUI();
     } catch (e) {
-      await Future.delayed(const Duration(seconds: 3));
-      isLoading = false.obs;
+      await Future.delayed(const Duration(seconds: 2));
       isInitial = false;
       _usersList = [];
       updateUI();
-      Get.log("Error: ${e.toString()}");
       if (e is AppException) {
-        Get.log("AppException: ${e.toString()}");
         ToastUtil.show(e.toString());
       } else {
         ToastUtil.show(e.toString());
       }
     }
+  }
+
+  Future<void> navigateToDetailsPage(Users selectedUsers) async {
+    Get.to(
+      () => const UserDetailsView(),
+      binding: UserDetailsBinding(),
+      arguments: {
+        keyUser: selectedUsers,
+      },
+    );
   }
 
 /*..... Local Database Used ......*/

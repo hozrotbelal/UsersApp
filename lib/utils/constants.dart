@@ -343,6 +343,8 @@ const String keyClientSecret = "client_secret";
 const String keyGrantType = "grant_type";
 const String keyavatarOriginal = "avatar_original";
 
+const String keyUser = "key_user";
+
 // Regular Expression
 const String regularExpressionEmail = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
 const String regularExpressionPhone = "(\\+[0-9]+[\\- \\.]*)?(\\([0-9]+\\)[\\- \\.]*)?" "([0-9][0-9\\- \\.]+[0-9])";

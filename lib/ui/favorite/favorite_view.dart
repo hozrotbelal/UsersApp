@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:usersapp/ui/favorite/favorite_controller.dart';
-import 'package:usersapp/ui/home/content/component/user_item.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/helper/shimmer_helper.dart';
@@ -10,7 +9,6 @@ import '../../base/widget/appbar/custom_app_bar.dart';
 import '../../base/widget/image_loader/image_load_view.dart';
 import '../../data/remote/dto/users/users.dart';
 import '../../utils/enum/enum.dart';
-import '../../utils/helper/text.dart';
 
 class FavoriteView extends GetView<FavoriteController> {
   const FavoriteView({Key? key}) : super(key: key);
@@ -21,7 +19,7 @@ class FavoriteView extends GetView<FavoriteController> {
     return AnnotatedRegion(
       value: systemUiOverlayStyleGlobal.copyWith(
         systemNavigationBarColor: colorWhite,
-        statusBarColor: colorBgGreyF8,
+        statusBarColor: colorWhite,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.light,
@@ -45,7 +43,7 @@ class FavoriteView extends GetView<FavoriteController> {
         children: <Widget>[
           // background,
           Container(
-            margin: const EdgeInsets.only(top: 50),
+            margin: const EdgeInsets.only(top: 35),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

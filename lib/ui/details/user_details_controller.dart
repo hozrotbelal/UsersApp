@@ -8,50 +8,67 @@ import 'package:usersapp/data/local/db/db_provider.dart';
 import 'package:usersapp/data/local/db/db_td.dart';
 import 'package:usersapp/data/remote/dto/users/users.dart';
 
+import '../../utils/constants.dart';
 import '../../utils/helper/toast.dart';
 
-class FavoriteController extends GetxController {
+class UserDetailsController extends GetxController {
   GlobalKey<ScaffoldState> favoriteKeyScaffolds = GlobalKey<ScaffoldState>();
 
+  late RxBool isLoading;
   ScrollController xScrollController = ScrollController();
   ScrollController scrollController = ScrollController();
 
-  List<Users> _favoriteUsersList = [];
-  List<Users> get allFavoriteUsersList => _favoriteUsersList;
+  Users? _usersObj;
+  Users? get usersObj => _usersObj;
   bool isInitial = true;
+  RxBool isFavorite = false.obs;
 
   @override
   void onInit() {
-    getAllFavoriteFromDB();
-    super.onInit();
-  }
-
-// All Favorite List
-  Future<void> getAllFavoriteFromDB() async {
-    getAllFavoriteUsers().then((result) async {
-      isInitial = false;
-      _favoriteUsersList = result;
-      updateUI();
-    });
-  }
-
-// Remove Favorite List
-  Future<void> removeFavoriteFromUserList(int id) async {
-    var removeFavouriteUser = await removeFromFavorite(id);
-    if (removeFavouriteUser) {
-      reset();
-      ToastUtil.show("Remove succesfully");
+    if (Get.arguments != null && Get.arguments[keyUser] != null) {
+      _usersObj = Get.arguments[keyUser];
+      if (_usersObj != null) {
+        addOrUpdateUserFavorite(_usersObj!);
+      }
     }
+    super.onInit();
   }
 
   void reset() {
     isInitial = true;
-    _favoriteUsersList = [];
+    isFavorite = false.obs;
     updateUI();
-    getAllFavoriteFromDB();
   }
 
 /*..... Local Database Used ......*/
+  Future<List<Users>> isAlreadyAddedFavorite(List<Users> userList, int id) async {
+    return userList.isNotEmpty ? userList.where((o) => o.id == id).toList() : [];
+  }
+
+  addOrUpdateUserFavorite(Users users) async {
+    await getAllFavoriteUsers().then((result) async {
+      var alreadyAddedFavoriteList = await isAlreadyAddedFavorite(result, users.id!);
+      if (alreadyAddedFavoriteList.isNotEmpty) {
+        // Get.log("users:>> ${alreadyAddedCartList.length}");
+        isFavorite = true.obs;
+
+        updateUI();
+      } else {
+        var addToFavoriteValue = await addToFavorite(users);
+        if (addToFavoriteValue) {
+          isFavorite = true.obs;
+          ToastUtil.show("Add favorite successfully");
+          updateUI();
+        }
+      }
+    });
+  }
+
+  Future<bool> addToFavorite(Users users) async {
+    final Database database = await DBProvider.db.database;
+    int id = await database.insert(FavouritesTable.tableName, users.toMap());
+    return id != 0;
+  }
 
   Future<bool> removeFromFavorite(int id) async {
     final Database database = await DBProvider.db.database;
@@ -59,7 +76,6 @@ class FavoriteController extends GetxController {
     return result != 0;
   }
 
-  // Get All Users Favorite List
   Future<List<Users>> getAllFavoriteUsers() async {
     List<Users> favoriteUsersList = [];
     final Database database = await DBProvider.db.database;
@@ -67,8 +83,6 @@ class FavoriteController extends GetxController {
     for (var r in result) {
       favoriteUsersList.add(Users.fromJson(r));
     }
-    // Get.log("favoriteList:>> ${favoriteUsersList.length}");
-
     return favoriteUsersList;
   }
 

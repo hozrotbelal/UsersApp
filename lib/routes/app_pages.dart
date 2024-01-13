@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:usersapp/ui/details/user_details_binding.dart';
+import 'package:usersapp/ui/details/user_details_view.dart';
 import 'package:usersapp/ui/favorite/favorite_binding.dart';
 import 'package:usersapp/ui/favorite/favorite_view.dart';
 import 'package:usersapp/ui/splash/splash_binding.dart';
@@ -25,6 +27,9 @@ class AppPages {
     ]),
     GetPage(name: _Paths.favorite, page: () => const FavoriteView(), bindings: [
       FavoriteBinding(),
+    ]),
+    GetPage(name: _Paths.details, page: () => const UserDetailsView(), bindings: [
+      UserDetailsBinding(),
     ]),
   ];
 }
