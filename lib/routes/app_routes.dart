@@ -12,14 +12,5 @@ abstract class _Paths {
   _Paths._();
   static const splash = '/splash';
   static const home = '/home';
-  static const category = '/category';
-  static const account = '/account';
-  static const editProfile = '/edit_profile';
-  static const filter = '/filter';
-  static const filterProduct = '/filter_product';
-  static const subFilter = '/sub_filter';
-  static const adsPost = '/ads_post';
-  static const adsPostReview = '/ads_post_review';
-  static const myFavoriteAdsReview = '/my_favorite_ads';
-  static const productDetails = '/product_details';
+  static const chat = '/chat';
 }

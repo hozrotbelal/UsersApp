@@ -6,84 +6,149 @@ import 'package:get/get.dart';
 
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:usersapp/data/local/service/local_service.dart';
+import 'package:usersapp/data/remote/dto/users/users.dart';
 import 'package:usersapp/data/remote/service/remote_service.dart';
+
+import '../../../base/exception/app_exception.dart';
+import '../../../utils/enum/enum.dart';
+import '../../../utils/helper/toast.dart';
 
 class HomeContentController extends GetxController {
   GlobalKey<ScaffoldState> homeKeyScaffolds = GlobalKey<ScaffoldState>();
 
   late RxBool isLoading;
   late double carouselHeight;
-  //ScrollController scrollController = ScrollController();
-  ScrollController categoryScrollController = ScrollController();
-  ScrollController featuredProductScrollController = ScrollController();
-  ScrollController popularAddsScrollController = ScrollController();
+  ScrollController xScrollController = ScrollController();
+  ScrollController scrollController = ScrollController();
+
   late RemoteService _remoteService;
   late LocalService _localService;
   // SiteSettingsResponse? siteSettings;
-  late String currency;
+
   TextEditingController searchController = TextEditingController();
-  TextEditingController typeMessageController = TextEditingController();
-  TextEditingController replyController = TextEditingController();
+
   FocusNode nameFocus = FocusNode();
 
   bool isOpenCallDialog = false;
-  RxInt cartItemCount = 0.obs;
+
   int userId = 0;
-  String email = "";
-  bool isLoggedIn = false;
-  bool topProductInit = false;
-  List<dynamic> topProducts = [];
+
+  int offSet = 20;
+  int limit = 10;
+
+  int page = 1;
+
+  var totalRecordCount = RxInt(0);
+
+  bool isLoadComplete = false;
+  bool isFirstLoadRunning = false;
+  bool isLoadMoreRunning = false;
+  bool showLoadingContainer = false;
+
+  bool isConnectivity = true;
+  bool isInitial = true;
+  List<Users> _usersList = [];
+  List<Users> get allUsersList => _usersList;
   var connectionStatus = 1.obs;
   var tabSelected = 0.obs;
   late StreamSubscription<InternetConnectionStatus> _listener;
-  List<String> homeTab = ["Popular", "Live", "Bike", "Electronics"];
-  List<String> categoryList = ["Property", "Auto Mobiles", "Gagdget", "Electronics", "Electronics"];
+
   @override
   void onInit() {
     isLoading = false.obs;
-    carouselHeight = 140.0;
-
     searchController = TextEditingController();
-    typeMessageController = TextEditingController();
-    replyController = TextEditingController();
     _localService = Get.find<LocalService>();
     _remoteService = Get.find<RemoteService>();
 
-    //keyScaffolds = GlobalKey<ScaffoldState>();
-    isLoggedIn = _localService.getIsLoggedIn();
+    // _listener = InternetConnectionChecker().onStatusChange.listen((InternetConnectionStatus status) {
+    //   switch (status) {
+    //     case InternetConnectionStatus.connected:
+    //       connectionStatus.value = 1;
 
-    // email = _localService.getUserEmail() ?? "";
+    //       getAllDataList(RefreshType.DEFAULT);
+    //       break;
+    //     case InternetConnectionStatus.disconnected:
+    //       connectionStatus.value = 0;
 
-    if (isLoggedIn == true) {
-      //  fetchData();
-    }
+    //       break;
+    //   }
+    // });
+    getAllDataList(RefreshType.DEFAULT);
+    xScrollController = ScrollController()..addListener(loadMore);
 
-    _listener = InternetConnectionChecker().onStatusChange.listen((InternetConnectionStatus status) {
-      switch (status) {
-        case InternetConnectionStatus.connected:
-          connectionStatus.value = 1;
-
-          if (isLoggedIn == true) {
-            // fetchData();
-          }
-          break;
-        case InternetConnectionStatus.disconnected:
-          connectionStatus.value = 0;
-
-          break;
-      }
-    });
     super.onInit();
+  }
+
+// load More
+  void loadMore() async {
+    if (isFirstLoadRunning == false && isLoadMoreRunning == false && xScrollController.position.pixels == xScrollController.position.maxScrollExtent && totalRecordCount.value > page * limit) {
+      page++;
+      isLoadMoreRunning = true;
+      getAllDataList(RefreshType.LOAD_MORE);
+    }
+  }
+
+  void getAllDataList(RefreshType type) async {
+    if (type == RefreshType.DEFAULT || type == RefreshType.REFRESH) {
+      page = 1;
+      _usersList.clear();
+      isLoadComplete = false;
+      isInitial = true;
+      isFirstLoadRunning = false;
+      showLoadingContainer = true;
+      totalRecordCount.value = 0;
+      updateUI();
+    }
+    if (!isLoadComplete) {
+      showLoadingContainer = true;
+      getAllUsersItemList();
+    }
+  }
+
+  // Get All Users List
+  void getAllUsersItemList() async {
+    try {
+      isLoadComplete = true;
+      isLoading = true.obs;
+
+      var usersDataResponse = await _remoteService.getUsersInfo(offset: page > 1 ? page * 10 : page);
+      if (usersDataResponse != null) {
+        if (usersDataResponse.users!.isNotEmpty) {
+          isLoadComplete = false;
+          _usersList.addAll(usersDataResponse.users ?? []);
+        }
+        totalRecordCount.value = usersDataResponse.totalUsers ?? 0;
+        isFirstLoadRunning = false;
+      } else {
+        _usersList = [];
+        totalRecordCount.value = 0;
+      }
+      isLoadMoreRunning = false;
+      isLoading = false.obs;
+      isInitial = false;
+      showLoadingContainer = false;
+      updateUI();
+    } catch (e) {
+      await Future.delayed(const Duration(seconds: 3));
+      isLoading = false.obs;
+      isInitial = false;
+      _usersList = [];
+      updateUI();
+      Get.log("Error: ${e.toString()}");
+      if (e is AppException) {
+        Get.log("AppException: ${e.toString()}");
+        ToastUtil.show(e.toString());
+      } else {
+        ToastUtil.show(e.toString());
+        //  ToastUtil.show('Public search error item'.tr);
+      }
+    }
   }
 
   @override
   void onClose() {
-    //scrollController.dispose();
-    featuredProductScrollController.dispose();
-    categoryScrollController.dispose();
-    popularAddsScrollController.dispose();
-    // searchController.dispose();
-    //nameFocus.dispose();
+    xScrollController.dispose();
+    scrollController.dispose();
     _listener.cancel();
     super.onClose();
   }
@@ -94,7 +159,12 @@ class HomeContentController extends GetxController {
   }
 
   Future<void> onPageRefresh() async {
-    if (isLoggedIn == true) {}
+    _usersList.clear();
+    isLoadComplete = false;
+    isFirstLoadRunning = true;
+    totalRecordCount.value = 0;
+    updateUI();
+    getAllDataList(RefreshType.REFRESH);
   }
 
   void updateUI() {

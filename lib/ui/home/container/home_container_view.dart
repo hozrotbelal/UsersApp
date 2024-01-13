@@ -28,7 +28,7 @@ class HomeContainerView extends GetView<HomeContainerController> {
         statusBarBrightness: Brightness.light,
       ),
       child: PopScope(
-        canPop: false,
+        canPop: true,
         onPopInvoked: (didPop) {
           var isValueExit = false;
           if (controller.selectedBottomBarIndex > 0) {
@@ -195,7 +195,7 @@ class HomeContainerView extends GetView<HomeContainerController> {
                       //   Get.back(canPop: true);
                       Navigator.of(context).pop(true);
                     },
-                    child: setTitle("Exit Ezcart", Get.width * 0.04, colorLightGray2),
+                    child: setTitle("Exit ", Get.width * 0.04, colorLightGray2),
                   ),
                   TextButton(
                     onPressed: () {

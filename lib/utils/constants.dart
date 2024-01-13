@@ -107,31 +107,6 @@ const Color colorOrangeC00 = Color(0xFFFF5C00);
 const Color colorGreen51 = Color(0xFF00A651);
 const Color colorDarkGrey2C = Color(0xFF2C2C2C);
 
-// const Color colorItemInactiveBackground = Color(0xFFEBF2FE);
-//
-// const Color colorExamItemInactiveBackground = Color(0xFFF5F6FC);
-// const Color colorExamItemActiveBackground = Color(0xFF3580F7);
-// const Color colorUserActive = Color(0xFF00D563);
-// const Color colorWinningTeamBackground = Color(0xFF6CE6E1);
-// const Color colorWinProgress = Color(0xFF27AE60);
-// const Color colorLoseProgress = Color(0xFFEB5757);
-// const Color colorTieProgress = colorAccent;
-// const Color colorSkipProgress = colorWinningTeamBackground;
-// const Color colorOrange = Color(0xFFF2994A);
-//
-
-const Color colorRoundShapeBlue = Color(0x20008fb4);
-const Color colorRoundShapeDarkBlue = Color(0xFF1565C0);
-const Color colorRoundShapeOrange = Color(0x20fe793d);
-const Color colorRoundShapeDarkOrange = Color(0xFFfe793d);
-const Color colorRoundShapeGray1 = Color(0x20353A44);
-const Color colorRoundShapeRed = Color(0x15EE1C25);
-const Color colorRoundShapeDarkRed = Color(0xFFec514b);
-const Color colorRoundShapePurple = Color(0x157632A7);
-
-const Color colorAuctionBgSelect1 = Color(0xFFEDE7E0);
-const Color colorAuctionBgSelect2 = Color(0xFFDFE3E9);
-
 //StepColor
 const Color colorStepComplete = Color(0xFF20C3AF);
 const Color colorStepEdit = Color(0xFFb2b4b6);
@@ -326,77 +301,30 @@ const String responseOfJsonType = "application/json";
 const String fontFamilyPoppins = "Poppins";
 const String fontFamilyQuicksand = "Quicksand";
 const String valueClientID = "APP_CLIENT";
-const String valueClientSecret = "APP_CLIENT_AF61E59520943DC26494F8941B";
 const String valueGrantTypeClientCredentials = "client_credentials";
 const String valueGrantTypeRefreshToken = "refresh_token";
 const int minimumPasswordLength = 8;
 const int minimumVerificationCodeLength = 4;
-const String appName = "Mohazan"; //this shows in the splash screen
-const String purchaseCode = "e61f6cbb-bf4f-4df0-bfc7-8b2632b513db"; //enter your purchase code for the app from codecanyon
-
-//const String facebookUrl = "www.facebook.com/ezcart.com.bd"; //enter your purchase code for the app from codecanyon
-const String facebookUrl = 'https://www.facebook.com/ezcart.com.bd';
-const String facebook = 'https://www.facebook.com';
+const String appName = "Users App"; //this shows in the splash screen
 
 const String prefixAuthToken = "Bearer ";
-const String saleTypeAuction = "Auction";
-const String saleTypeBargain = "Bargain";
-const String saleTypeGallery = "Gallery";
-
-//Order Status
-const String pending = "Pending";
-const String confirmed = "Confirmed";
-const String delivered = "Delivered";
-const String processing = "Processing";
-const String hold = "Hold";
-const String returned = "Returned";
-const String canceled = "Canceled";
 
 // Backend
 const String baseDevelopmentUrl = "";
 const String baseLiveUrl = "";
 const String baseUrl = baseDevelopmentUrl;
 
-//const String baseAppDevelopmentUrl = "https://ezcart.com.bd/";
-//const String baseAppDevelopmentUrl = "https://dev.ezcart.com.bd/";
-const String baseAppDevelopmentUrl = "https://test.ezcart.com.bd/";
+const String baseAppDevelopmentUrl = "https://api.slingacademy.com/";
 
 const String baseAppLiveUrl = "";
 const String baseAppUrl = baseAppDevelopmentUrl;
 
 final String baseAppImageUrl = join(baseAppUrl, "public");
-final String baseApiUrl = join(baseAppUrl, "api/v2");
-final String loginUrl = join(baseApiUrl, "auth/login");
-final String socialLoginUrl = join(baseApiUrl, "auth/social-login");
+final String baseApiUrl = join(baseAppUrl, "v1/sample-data");
 
-final String logoutUrl = join(baseApiUrl, "auth/logout");
-final String userSignUpUrl = join(baseApiUrl, "auth/signup");
-final String resendCodeUrl = join(baseApiUrl, "auth/resend_code");
-final String confirmCodeUrl = join(baseApiUrl, "auth/confirm_code");
-final String forgetPasswordUrl = join(baseApiUrl, "auth/password/forget_request");
-final String passwordConfirmCodeUrl = join(baseApiUrl, "auth/password/confirm_code");
-
-final String confirmResetPasswordUrl = join(baseApiUrl, "auth/password/confirm_reset");
-final String passwordResendCodeUrl = join(baseApiUrl, "auth/password/resend_code");
-final String getUserByTokenUrl = join(baseApiUrl, "get-user-by-access_token");
-final String getProfileCounterUrl = join(baseApiUrl, "profile/counters/");
-final String profileUpdateUrl = join(baseApiUrl, "profile/update");
-final String profileUpdateDeviceTokenUrl = join(baseApiUrl, "profile/update-device-token");
-final String profileUpdateImageUrl = join(baseApiUrl, "profile/update-image");
-
-final String siteSettingsUrl = join(baseApiUrl, "sitesetting/get");
-final String slidersUrl = join(
+final String getUsersInfoUrl = join(
   baseApiUrl,
-  "sliders",
-);
-final String getFeaturedProductsUrl = join(
-  baseApiUrl,
-  "products/featured",
-);
-
-final String getBestSellerProductsUrl = join(
-  baseApiUrl,
-  "products/best-seller",
+  "users",
 );
 
 // Key
@@ -405,11 +333,7 @@ const String keyData = "data";
 const String keyMessage = "message";
 const String keyAccessLocal = "access_local";
 
-const String keyTrainingCategories = "training_categories";
 const String keyTimeLengths = "time_lengths";
-const String keyProfessions = "professions";
-const String keyCategoryIconUrl = "cat_icon_url";
-const String keyStoreLoginResponse = "store_login_response";
 const String keyStoreIsLoggedIn = "is_logged_in";
 // --------------------------------------------- //
 
@@ -419,35 +343,21 @@ const String keyClientSecret = "client_secret";
 const String keyGrantType = "grant_type";
 const String keyavatarOriginal = "avatar_original";
 
-const String keyUserName = "username";
-const String keyEmail = "email";
-const String keyPhone = "phone";
-const String keyPassword = "password";
-const String keyCurrentPassword = "current_password";
-const String keyConfirmationPassword = "password_confirmation";
-const String keyNewPassword = "new_password";
-
 // Regular Expression
 const String regularExpressionEmail = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
 const String regularExpressionPhone = "(\\+[0-9]+[\\- \\.]*)?(\\([0-9]+\\)[\\- \\.]*)?" "([0-9][0-9\\- \\.]+[0-9])";
 
 // Asset Resources
-const String assetImgLogo = 'assets/app_mohazon.png';
+
 const String assetPlaceHolder = 'assets/placeholder.jpeg';
 const String assetDefaultAvatar = 'assets/default_avatar.png';
-//Dummy
-const String assetDummyCategory1 = 'assets/dummy_category1.png';
-const String assetDummyTopBrand1 = 'assets/dummy_top_brand1.png';
-const String assetDummyTopBrand2 = 'assets/dummy_top_brand2.png';
-const String assetDummyProduct1 = 'assets/dummy_product1.png';
-const String assetDummyProduct2 = 'assets/dummy_product2.png';
-const String assetDummySpecialDeals1 = 'assets/dummy_special_deals1.png';
+
 const String assetDummyProfile = 'assets/dummy_profile.png';
-const String assetDummyHome1 = 'assets/dummy_home1.png';
-const String assetDummyHome2 = 'assets/dummy_home2.png';
+
 const String loadingImage = 'assets/loading.png';
 
 //SVG
+const String assetSvgAppLogo = 'assets/svg/app_logo.svg';
 const String assetSvgBottomCenterDocked = 'assets/svg/center_bottom_menu.svg';
 const String assetSvgIcHome = 'assets/svg/ic_home.svg';
 const String assetSvgIcChat = 'assets/svg/ic_chat.svg';
@@ -483,20 +393,3 @@ const String assetSvgIcSMS = 'assets/svg/ic_sms.svg';
 // Common String
 const String strAddAddress = "Add";
 const String strEditAddress = "Edit";
-const int typeAsCustomer = 2;
-const int typeAsSeller = 1;
-const String isBaseCategory = "isBaseCategory";
-const String isTopCategory = "isTopCategory";
-const String hasBottomnav = "hasBottomnav";
-const String cartPayment = "cart_payment";
-const String walletPayment = "wallet_payment";
-
-const String bkashScreen = "Bkash";
-const String nagadScreen = "Nagad";
-const String paypalScreen = "Paypal";
-const String razorPayScreen = "RazorPay";
-const String payStackScreen = "PayStack";
-const String sslCommerceScreen = "SSLcommerze";
-const String stripeScreen = "Stripe";
-const String iyzicoScreen = "Iyzico";
-const String cardOnDeliveryScreen = "Card On Delivery";

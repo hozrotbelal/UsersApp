@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:usersapp/ui/splash/splash_controller.dart';
 
@@ -31,8 +32,8 @@ class SplashView extends GetView<SplashController> {
           // ),
           child: GetBuilder<SplashController>(builder: (controller) {
             return Center(
-              child: Image.asset(
-                assetImgLogo,
+              child: SvgPicture.asset(
+                assetSvgAppLogo,
                 height: 60.0,
                 width: 200.0,
                 fit: BoxFit.contain,
