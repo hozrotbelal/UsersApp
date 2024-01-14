@@ -49,9 +49,7 @@ class UserDetailsController extends GetxController {
     await getAllFavoriteUsers().then((result) async {
       var alreadyAddedFavoriteList = await isAlreadyAddedFavorite(result, users.id!);
       if (alreadyAddedFavoriteList.isNotEmpty) {
-        // Get.log("users:>> ${alreadyAddedCartList.length}");
         isFavorite = true.obs;
-
         updateUI();
       } else {
         var addToFavoriteValue = await addToFavorite(users);

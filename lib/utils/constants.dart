@@ -86,19 +86,11 @@ const Color colorLightOrange1 = Color(0xFFFF9900);
 // const Color colorLightOrange3 = Color(0xFFF6E8D5);
 const Color colorWhite = Color(0xFFFFFFFF);
 // App colors (others)
-// const Color colorSplashNavigationBarBackground = Color(0xFF0B0C0E);
 const Color colorInputFieldBackground = Color(0xFFFAFAFA);
 const Color colorInputFieldBorder = Color(0xFFF3F2F2);
 const Color colorPageBackground = Color(0xFFF4F5F7);
 const Color colorPurple = Color(0xFF7632A7);
 const Color colorItemActiveBackground = Color(0xFF3580F7);
-// const Color colorCloseButtonBackground = Color(0x12707586);
-// const Color colorResetPageBackground = Color(0xFFF6F5F5);
-// const Color colorNewPasswordBackground = Color(0xFF3C414B);
-// const Color colorNewPasswordRoundShape = Color(0xFF33383F);
-// const Color colorMyProfileBg = Color(0xFFF1F3F6);
-// const Color colorFavoriteImageBg = Color(0xFFF2F2F2);
-// const Color colorFavoriteImageBgBorder = Color(0xFFB7B7B7);
 
 const Color colorRed28 = Color(0xFFFC6828);
 const Color colorRed2C = Color(0xFFE6012C);
